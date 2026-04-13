@@ -1,3 +1,21 @@
+Metadata-Version: 2.4
+Name: swissrenov3
+Version: 0.1.0
+Summary: Une courte description
+Author-email: Malo <vous@email.com>
+Project-URL: Homepage, https://github.com/MaloENSG/Swissrenov-toolbox
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: laspy
+Requires-Dist: open3d
+Requires-Dist: opencv-python
+Requires-Dist: matplotlib
+Requires-Dist: Pillow
+Requires-Dist: scipy
+Dynamic: license-file
+
 # Swissrenov3
 
 > Librairie python pour le traitement de nuages de points 3D.

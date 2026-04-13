@@ -1,0 +1,7 @@
+numpy
+laspy
+open3d
+opencv-python
+matplotlib
+Pillow
+scipy

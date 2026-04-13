@@ -7,15 +7,12 @@ Created on Thu Apr  9 09:56:43 2026
 
 import numpy as np
 import matplotlib.pyplot as plt
-from pointcloud import PointCloud, PointCloudInfo, Referentiel, Raster
-import IO as io
-import geometry as geo
-import utils as u
+import swissrenov3 as s3
 
-import simple_tools as st
+rt = "D:/SWISSRENOV/AutoProcessing/autoswiss/"
 
-# ipath = "exemple.las"
-# pc = io.read_las(ipath)
+ipath = rt + "exemple.las"
+pc = s3.IO.read_las(ipath)
 
 # pc.index()
 

@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+src/swissrenov3/IO.py
+src/swissrenov3/__init__.py
+src/swissrenov3/geometry.py
+src/swissrenov3/o3d_tools.py
+src/swissrenov3/pointcloud.py
+src/swissrenov3/simple_tools.py
+src/swissrenov3/utils.py
+src/swissrenov3.egg-info/PKG-INFO
+src/swissrenov3.egg-info/SOURCES.txt
+src/swissrenov3.egg-info/dependency_links.txt
+src/swissrenov3.egg-info/requires.txt
+src/swissrenov3.egg-info/top_level.txt
+tests/test_unitaire.py
