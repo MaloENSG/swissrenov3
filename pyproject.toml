@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "swissrenov3"
+version = "0.1.0"
+description = "Une courte description"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+authors = [
+  { name = "Malo", email = "vous@email.com" }
+]
+dependencies = [
+  "numpy",
+  "laspy",
+  "open3d",
+  "opencv-python",
+  "matplotlib",
+  "Pillow",
+  "scipy",
+]
+
+[project.urls]
+Homepage = "https://github.com/MaloENSG/Swissrenov-toolbox"
