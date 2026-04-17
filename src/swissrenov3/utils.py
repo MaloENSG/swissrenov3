@@ -6,7 +6,7 @@ Created on Wed Apr  8 11:46:42 2026
 """
 
 import numpy as np
-from pointcloud import PointCloud, PointCloudInfo, Referentiel
+from .pointcloud import PointCloud, PointCloudInfo, Referentiel
 
 def axis_to_str(axis) -> str:
     """
@@ -270,7 +270,29 @@ def select_by_class(pc: PointCloud, classes):
     return idx, idx_out
 
 
-
+def flip_pc(pc: PointCloud, axis: str) -> PointCloud:
+    """
+    Retourne un PointCloud miroir selon un axe.
+    
+    Args:
+        axis : "x", "y" ou "z"
+    
+    Returns:
+        PointCloud avec l'axe inversé
+    """
+    flip = {"x": [-1,  1,  1],
+            "y": [ 1, -1,  1],
+            "z": [ 1,  1, -1]}
+    
+    if axis not in flip:
+        raise ValueError(f"Axe invalide : '{axis}', valeurs acceptées : {list(flip.keys())}")
+    
+    return PointCloud(
+        xyz            = pc.xyz * np.array(flip[axis]),
+        rvb            = pc.rvb,
+        classification = pc.classification,
+        indexation     = pc.indexation,
+    )
 
 
 

@@ -6,7 +6,7 @@ Created on Tue Apr  7 17:55:28 2026
 """
 
 import numpy as np
-from pointcloud import PointCloud, PointCloudInfo, Referentiel
+from .pointcloud import PointCloud, PointCloudInfo, Referentiel
 
 def arr_translate(array: np.ndarray, offset: np.ndarray):
     """

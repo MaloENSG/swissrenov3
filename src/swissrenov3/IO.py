@@ -8,7 +8,7 @@ Created on Tue Apr  7 13:39:05 2026
 import laspy
 # import pye57
 import numpy as np
-from pointcloud import PointCloud, PointCloudInfo, Referentiel
+from .pointcloud import PointCloud, PointCloudInfo, Referentiel
 
 def read_las(path):
     """Charge un fichier .las / .laz et retourne un PointCloud."""
@@ -19,7 +19,7 @@ def read_las(path):
     xyz = np.vstack([las.x, las.y, las.z]).T
     
     # RVB — normalisation 8bits
-    if np.any(las.red != 0):
+    if hasattr(las, 'red') and np.any(las.red != 0):
         rvb = np.vstack([las.red, las.green, las.blue]).T
         rvb = (rvb / rvb.max() * 255).astype(np.uint8)
     else:

@@ -7,10 +7,11 @@ Created on Wed Apr  8 14:04:05 2026
 
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 from scipy.signal import argrelmax
-from pointcloud import PointCloud, Raster
-from o3d_tools import pc_normals
-import utils
+from .pointcloud import PointCloud, Raster
+from .o3d_tools import pc_normals
+from .utils import *
 
 import os
 
@@ -119,21 +120,22 @@ def pc_rasterise(pc: PointCloud, mode, resolution, axis, grid_size=None):
     """
     if mode == '' or len(mode) > 1:
         raise ValueError("Mode vide : choisir parmi 'm', 'a', 'c', 'p', 'n', 'e' ")
-
-    # 1. Sélection des axes et gestion du signe
-    axes = {
-        "x" : ( pc.xyz[:, 1],  pc.xyz[:, 2],  pc.xyz[:, 0]),
-        "-x": ( pc.xyz[:, 1],  pc.xyz[:, 2], -pc.xyz[:, 0]),
-        "y" : ( pc.xyz[:, 0],  pc.xyz[:, 2],  pc.xyz[:, 1]),
-        "-y": ( pc.xyz[:, 0],  pc.xyz[:, 2], -pc.xyz[:, 1]),
-        "z" : ( pc.xyz[:, 0],  pc.xyz[:, 1],  pc.xyz[:, 2]),
-        "-z": ( pc.xyz[:, 0], -pc.xyz[:, 1],  pc.xyz[:, 2]),
-    }
     
-    if axis not in axes:
-        raise ValueError(f"Axe invalide : '{axis}', valeurs acceptées : {list(axes.keys())}")
+    # 1. Sélection des axes et gestion du signe
+    # Gestion axe négatif -> flip avant projection
+    if axis.startswith("-"):
+        pc  = flip_pc(pc, axis[1])   # ex: "-x" -> flip sur "x"
+        axis_abs = axis[1]               # ex: "-x" -> "x"
+    else :
+        axis_abs = axis
 
-    x, y, z = axes[axis]
+    axes = {
+        "x" : (pc.xyz[:, 1], pc.xyz[:, 2], pc.xyz[:, 0]),
+        "y" : (pc.xyz[:, 0], pc.xyz[:, 2], pc.xyz[:, 1]),
+        "z" : (pc.xyz[:, 0], pc.xyz[:, 1], pc.xyz[:, 2]),
+    }
+
+    x, y, z = axes[axis_abs]
 
     # 2. Normalisation de z (toujours positif, part de 0)
     z = z - z.min()
@@ -186,6 +188,8 @@ def pc_rasterise(pc: PointCloud, mode, resolution, axis, grid_size=None):
 
     # 6. Flip pour orientation image naturelle
     raster = raster[::-1]
+    if axis in ['-x', 'y', '-z']:
+        raster = np.flip(raster,1)
 
     return Raster(
         raster=raster, 
@@ -198,66 +202,80 @@ def pc_rasterise(pc: PointCloud, mode, resolution, axis, grid_size=None):
         )
 
 
-def pc_raster_layer(pcd_pcd, axis_view, resolution, pas_val, largeur_layer, inter_val=None):
+def pc_raster_layer(pc: PointCloud, axis: str, resolution: float, 
+                    step: float, width: float, 
+                    interval: tuple = None) -> Raster:
     """
+    Superpose des accumulations de tranches pour créer un raster de densité par couches.
     
-
-    Parameters
-    ----------
-    pcd_pcd : TYPE
-        Nuage de point.
-    axis_view : TYPE
-        axe de vue.
-    resolution :
-        resolution du raster
-    pas_val : TYPE
-        interval entre chaque tranche.
-    largeur_layer : TYPE
-        largeur de tranche.
-    inter_val : TYPE, optional
-        Interval entre la premiere et derniere tranche (en cm).
-        par defaut, du min au max du nuage de points. The default is None.
-
-    Returns
-    -------
-    raster : TYPE
-        DESCRIPTION.
-
+    Args:
+        pc       : PointCloud source
+        axis     : axe de vue "x", "-x", "y", "-y", "z", "-z"
+        resolution: taille d'une cellule en mètres
+        step     : intervalle entre chaque tranche en mètres
+        width    : largeur de chaque tranche en mètres
+        interval : (val_min, val_max) en mètres, défaut = étendue du nuage
+    
+    Returns:
+        Raster : accumulation des tranches
     """
-    
-    round_value = 100 # cm -> 1000 pour le mm
-
-    ####
-    if axis_view==0 or axis_view==-1:
-        axis = 0
-    elif axis_view==1 or axis_view==-2:
-        axis = 1
-    elif axis_view==2 or axis_view==-3:
-        axis = 2
-    
-    np_pcd = np.asarray(pcd_pcd.points)
-    raster, gridsize = make_grid(pcd_pcd, resolution=resolution, axis=axis)
-    
-    if inter_val == None:
-        val_min, val_max = int(np.min(np_pcd, axis=0)[axis]*round_value), int(np.max(np_pcd, axis=0)[axis]*round_value)
+    # Axe de découpe (index dans xyz)
+    if axis.startswith("-"):
+        axe = str_to_axis(axis[1])
     else :
-        val_min, val_max = inter_val
-    
-    
-    pas_val = int(pas_val*round_value)
-    for val in range(val_min, val_max, pas_val):
-        
-        valm = val/round_value
-        print(val)
-        
-        pcd_layer, invert_layer_pcd = extract_layer(pcd_pcd, valm, largeur_layer, axis=axis, k=0.75)
-        
-        img = rasterise_xyz(pcd_layer, mode='p', resolution=resolution, axis=axis_view, grid_size=gridsize)
-        raster += img
-        
-    return raster
+        axe = str_to_axis(axis)
 
+    # Intervalle de découpe
+    if interval is None:
+        val_min = pc.xyz[:, axe].min()
+        val_max = pc.xyz[:, axe].max()
+    else:
+        val_min, val_max = interval
 
+    # Grille de base
+    gridsize = make_grid(pc, axe)
+    x_min, x_max, y_min, y_max = gridsize
+    grid_width  = int(np.ceil((x_max - x_min) / resolution))
+    grid_height = int(np.ceil((y_max - y_min) / resolution))
+    raster_acc  = np.zeros((grid_height, grid_width))
+
+    # Itération sur les tranches
+    steps = np.arange(val_min, val_max, step)
+    for i, val in enumerate(steps):
+        print(f"Tranche {i+1}/{len(steps)} : {val:.3f} m")
+
+        # Crop de la tranche
+        idx_layer, _ = select_crop(pc, **{
+            f"{['x','y','z'][axe]}_peak" : val + width / 2,
+            f"{['x','y','z'][axe]}_width": width,
+        })
+
+        if len(idx_layer) == 0:
+            continue
+
+        pc_layer = select_pc_index(pc, idx_layer)
+
+        # Rasterisation de la tranche
+        axis_abs = axis_to_str(axe)
+        r = pc_rasterise(pc_layer, mode='p', resolution=resolution,
+                         axis=axis_abs, grid_size=gridsize)
+        raster_acc += r.raster
+        
+    # Flip final
+    raster_acc = raster_acc
+    
+    if axis.startswith("-"):
+        raster_acc = np.flip(raster_acc,1)
+
+    return Raster(
+        raster     = raster_acc,
+        resolution = resolution,
+        gridsize   = gridsize,
+        mode       = 'layer',
+        axis       = axis,
+        offset     = pc.info.offset,
+        angle      = pc.info.angle,
+    )
 
 def write_tfw(raster: Raster, path: str):
     """
@@ -299,6 +317,68 @@ def write_tfw(raster: Raster, path: str):
             f.write(f"{value:.6f}\n")
 
 
+def raster_to_image(raster: Raster, path: str, 
+                    colormap: str = "gray") -> np.ndarray:
+    """
+    Convertir un Raster en image avec colormap.
+    
+    Args:
+        raster   : objet Raster source
+        colormap : "binary" | "gray" | "afmhot" | "bwr" | "jet"
+    
+    Returns:
+        img : np.ndarray image exportée (BGR pour cv2)
+    """
+    COLORMAPS = ["binary", "gray", "afmhot", "bwr", "jet"]
+    if colormap not in COLORMAPS:
+        raise ValueError(f"Colormap invalide : '{colormap}', valeurs acceptées : {COLORMAPS}")
+
+    data = raster.raster
+
+    # 1. Normalisation [0, 1]
+    if raster.is_color:
+        # Mode couleur 'c' : déjà en [0, 1], pas de colormap
+        img = (data * 255).astype(np.uint8)
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    else:
+        # Normalisation
+        r_min, r_max = data.min(), data.max()
+        if r_max > r_min:
+            data_norm = (data - r_min) / (r_max - r_min)
+        else:
+            data_norm = np.zeros_like(data)
+
+        # 2. Application colormap matplotlib
+        cmap = plt.get_cmap(colormap)
+        img_rgba = (cmap(data_norm) * 255).astype(np.uint8)  # (H, W, 4) RGBA
+        img_rgb  = img_rgba[:, :, :3]                         # (H, W, 3) RGB
+        img      = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)   # BGR pour cv2
+
+    # 4. World file
+    # x_min, _, _, y_max = raster.gridsize
+    # tfw_path = os.path.splitext(path)[0] + tfw_extension(path)
+    # write_tfw(tfw_path, raster.resolution, x_min, y_max, raster.angle)
+
+    # print(f"Exporté : {path} + {tfw_path}")
+    return img
+
+def export_image(img, path):
+    """
+    Convertir un Raster en image avec colormap.
+    
+    Args:
+        img  : np.ndarray image exportée (BGR pour cv2)
+        path : chemin de sortie avec extension (.png, .jpg, .tif)
+    """
+    ext = os.path.splitext(path)[1].lower()
+    FORMATS = [".png", ".jpg", ".jpeg", ".tif", ".tiff"]
+    if ext not in FORMATS:
+        raise ValueError(f"Format invalide : '{ext}', valeurs acceptées : {FORMATS}")
+    
+    cv2.imwrite(path, img)
+    return True
+
+
 def tfw_extension(image_path: str):
     """
     Trouver l'extention de géoréférencementdu fichier world à partir de l'extention d'image
@@ -318,8 +398,6 @@ def tfw_extension(image_path: str):
         ".tif":  ".tfw",
         ".tiff": ".tfw",
     }.get(ext, ".txt")
-
-# def export_raster(path, raster, )
 
 
 
