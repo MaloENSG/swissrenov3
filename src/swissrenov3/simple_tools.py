@@ -9,6 +9,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from scipy.signal import argrelmax
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import NearestNeighbors
+
 from .pointcloud import PointCloud, Raster
 from .o3d_tools import pc_normals
 from .utils import *
@@ -401,7 +404,54 @@ def tfw_extension(image_path: str):
 
 
 
+def interp_labels(pc: PointCloud, labels: np.ndarray, max_distance=0.05) -> np.ndarray:
+    """
+    Interpole les labels manquants (0) d'un PointCloud par plus proche voisin.
+    
+    Args:
+        pc           : PointCloud source
+        labels       : np.ndarray (n,) labels associés au PointCloud (0 = sans label)
+        max_distance : distance max pour interpolation en mètres
+    
+    Returns:
+        labels_interp : np.ndarray (n,) labels interpolés
+    """
+    if len(labels) != len(pc):
+        raise ValueError(f"Size error : {len(labels)} labels pour {len(pc)} points")
 
+    labels = labels.copy()
+
+    # Séparation labelisé / non labelisé
+    mask_labeled   = labels != 0
+    mask_nolabeled = labels == 0
+
+    if mask_labeled.sum() == 0:
+        raise ValueError("Aucun point labelisé dans le nuage")
+    if mask_nolabeled.sum() == 0:
+        print("Tous les points sont déjà labelisés")
+        return labels
+
+    xyz_labeled   = pc.xyz[mask_labeled]
+    xyz_nolabeled = pc.xyz[mask_nolabeled]
+    labels_known  = labels[mask_labeled]
+
+    # Plus proche voisin
+    nn = NearestNeighbors(n_neighbors=1)
+    nn.fit(xyz_labeled)
+    distances, indices = nn.kneighbors(xyz_nolabeled)
+
+    # Interpolation si dans la distance limite
+    new_labels = np.where(
+        distances[:, 0] <= max_distance,
+        labels_known[indices[:, 0]],
+        0  # garde 0 si trop loin
+    )
+
+    labels[mask_nolabeled] = new_labels
+
+    # print(f"Interpolés : {(new_labels != 0).sum()} / {mask_nolabeled.sum()} points sans label")
+
+    return labels
 
 
 

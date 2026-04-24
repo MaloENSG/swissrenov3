@@ -295,6 +295,23 @@ def flip_pc(pc: PointCloud, axis: str) -> PointCloud:
     )
 
 
+def yawpitch_to_xy(yaw, pitch, cols: int, rows: int) -> tuple:
+    """
+    Convertit des angles yaw/pitch en coordonnées image.
+    
+    Args:
+        yaw   : angle azimutal en radians — float ou np.ndarray (n,)
+        pitch : angle d'élévation en radians — float ou np.ndarray (n,)
+        cols  : largeur de l'image en pixels
+        rows  : hauteur de l'image en pixels
+    
+    Returns:
+        x, y : coordonnées image — même type que l'entrée
+    """
+    x = (yaw / (2 * np.pi) + 0.5) % 1 * cols
+    y = (0.5 - pitch / np.pi) * rows
+
+    return x, y
 
 
 

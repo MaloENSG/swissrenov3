@@ -44,13 +44,13 @@ pc = s3.IO.read_las(ipath)
 # opath = "exout.las"
 # pc_class.write_las(opath)
 
-start = time.time()
-pcd = s3.o3d_tools.rg_cluster(pc, tangle=10)
-end = time.time()
+# start = time.time()
+# pcd = s3.o3d_tools.rg_cluster(pc, tangle=10)
+# end = time.time()
 
-print(end-start)
+# print(end-start)
 
-o3d.visualization.draw_geometries([pcd])
+# o3d.visualization.draw_geometries([pcd])
 
 
 

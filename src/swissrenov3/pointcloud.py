@@ -12,6 +12,7 @@ import cv2
 from PIL import Image
 import copy
 import laspy
+from datetime import datetime
 
 # # Charger le fichier LAS/LAZ
 # file_path = "D:\\SWISSRENOV\\process_level\\test_shape_3.las"  # remplace par ton fichier
@@ -218,7 +219,17 @@ class PointCloudInfo:
         self.offset = [0, 0, 0]
         self.angle = 0
         
+        # --- Traçabilité ---
+        self._history: list[str] = []
         
+        def add_history(self, message: str):
+            """Ajoute une entrée dans l'historique des traitements."""
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self._history.append(f"[{timestamp}] {message}")
+    
+        @property
+        def history(self):
+            return self._history
         
 
 class Raster:
