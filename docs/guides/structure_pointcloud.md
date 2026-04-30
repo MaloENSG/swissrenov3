@@ -8,30 +8,37 @@ Cette page décrit l'organisation des nuages de points pour une friche.
 
 ```
 friche/
-├── Station/
-│   └── YYYY-MM-DD/
-│       ├── station1.las
-│       ├── station1.pts
-│       ├── station1.e57
-│       └── ...
-└── Pointcloud/
-    └── id_pointcloud/
-        ├── id_pointcloud.las
-        ├── semantique.json
-        ├── metadata.json
-        └── Visualisation/
-            ├── metadata_viz.json
-            ├── etage1/
-            └── etage2/
-                └── piece21/
-                    └── id_pointcloud_room_21/
+└── Pointclouds/
+    ├── Stations/
+    │   └── YYYY-MM-DD/
+    │       ├── station1.las
+    │       ├── station1.pts
+    │       ├── station1.e57
+    │       └── ...
+    └── Pointcloud_processed/
+        └── id_pointcloud/
+            ├── id_pointcloud.las
+            ├── semantique.json
+            ├── metadata.json
+            └── Visualisation/
+                ├── metadata_viz.json
+                ├── etage1/
+                └── etage2/
+                    └── piece21/
+                        └── id_pointcloud_room_21/
 ```
 
 ---
 
 ## Description des dossiers et fichiers
 
-### `Station/`
+### `Pointclouds/`
+
+Dossier principal regroupant toutes les données de nuages de points (brutes et agrégées).
+
+---
+
+### `Stations/`
 
 Données brutes issues des scans LiDAR, organisées par date d'acquisition. Chaque sous-dossier correspond à une époque d'acquisition.
 
@@ -53,7 +60,7 @@ Chaque station de scan est représentée par un fichier dans l'un des formats su
 
 ---
 
-### `Pointcloud/`
+### `Pointcloud_processed/`
 
 Nuages de points traités et fusionnés, produits à partir des scans bruts de `Station/`. Chaque sous-dossier correspond à un nuage de points consolidé et identifié.
 
