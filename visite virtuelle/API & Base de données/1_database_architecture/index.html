@@ -1,0 +1,3554 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://mydomain.org/mysite/visite%20virtuelle/API%20%26%20Base%20de%20donn%C3%A9es/1_database_architecture/">
+      
+      
+        <link rel="prev" href="../../../potree/pcd-extraction/">
+      
+      
+        <link rel="next" href="../2_database_crud/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Architecture de la base de données - My site</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-de-la-base-de-donnees" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My site" class="md-header__button md-logo" aria-label="My site" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My site
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture de la base de données
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My site" class="md-nav__button md-logo" aria-label="My site" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    My site
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Welcome to MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IE
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    IE
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Api
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../IE/api/api_exemples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api exemples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../IE/api/api_routes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api routes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acquisition & traitement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Acquisition & traitement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/acquisition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1.Acquisition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classification automatique
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/image-panoramique/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Images panoramiques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/option-panoramique/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Images panoramiques enrichies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/photogrammetrie-application/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Photogrammetrie - Mise en pratique
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/photogrammetrie/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.Photogrammetrie - Les concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline &amp; Récapitulatif
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/traitement-pcd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traitement nuage de points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/quickstart_user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart - Visite Virtuelle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structure_general/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure des fichiers — Viewers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structure_panoramic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure des fichiers — Panoramiques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structure_pointcloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure des fichiers — Nuages de points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structures_classes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    struct classes todo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Potree
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Potree
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../potree/Rasterisation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rasterisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../potree/pcd-extraction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporter un nuage de points Potree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visite virtuelle
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visite virtuelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_1" id="__nav_8_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API & Base de données
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API & Base de données
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture de la base de données
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture de la base de données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagramme-des-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagramme des relations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parcelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        parcelle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        batiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#niveau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        niveau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        room
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maquette_gbxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        maquette_gbxml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pointcloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pointcloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raster_pcd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        raster_pcd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map_3d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        map_3d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panoramique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        panoramique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometry_2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geometry_2d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        annotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formulaire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        formulaire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formulaire_champ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        formulaire_champ
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formulaire_reponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        formulaire_reponse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auteur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auteur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#materiaux_types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        materiaux_types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conventions-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions techniques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#champs-geographiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Champs géographiques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#champs-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Champs JSON
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comportement-des-cles-etrangeres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comportement des clés étrangères
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo-recapitulatif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TODO récapitulatif
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_database_crud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CRUD — Opérations sur la base de données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_api_routes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Backend — Référence des routes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagramme-des-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagramme des relations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parcelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        parcelle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        batiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#niveau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        niveau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        room
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maquette_gbxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        maquette_gbxml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pointcloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pointcloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raster_pcd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        raster_pcd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map_3d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        map_3d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panoramique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        panoramique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometry_2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geometry_2d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        annotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formulaire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        formulaire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formulaire_champ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        formulaire_champ
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formulaire_reponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        formulaire_reponse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auteur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auteur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#materiaux_types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        materiaux_types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conventions-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions techniques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#champs-geographiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Champs géographiques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#champs-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Champs JSON
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comportement-des-cles-etrangeres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comportement des clés étrangères
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo-recapitulatif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TODO récapitulatif
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="architecture-de-la-base-de-donnees">Architecture de la base de données</h1>
+<blockquote>
+<p>Base de données pour le viewer d'images panoramiques Swissrenov avec gestion des annotations et de la connexion à la 3D.</p>
+</blockquote>
+<hr />
+<h2 id="vue-densemble">Vue d'ensemble</h2>
+<p>La base de données est organisée autour de trois grands axes qui se rejoignent au niveau du <strong>Bâtiment</strong> :</p>
+<ul>
+<li><strong>Axe géographique</strong> : <code>Site</code> → <code>Parcelle</code> → <code>Bâtiment</code> → <code>Volume</code> → <code>Niveau</code> → <code>Room</code></li>
+<li><strong>Axe d'annotation</strong> : <code>Panoramique</code> → <code>Geometry2D</code> → <code>Annotation</code> → <code>Formulaire</code></li>
+<li><strong>Axe nuage de points</strong> : <code>PointCloud</code> → <code>RasterPcd</code>/<code>Map3D</code></li>
+</ul>
+<p>Les formulaires (<code>Formulaire</code>, <code>FormulaireChamp</code>, <code>FormulaireReponse</code>) permettent d'attacher des données structurées et personnalisables à chaque annotation.
+Les maquettes <code>MaquetteGbxml</code> sont des données supplémentaires rattachées au niveau du <strong>Bâtiment</strong>.</p>
+<p>Le système de coordonnées de référence est le <strong>SRID 2056</strong> (MN95 / LV95 — réseau suisse).</p>
+<hr />
+<h2 id="diagramme-des-relations">Diagramme des relations</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Site
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a> ├── Parcelle (N)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a> │    └── Bâtiment (N)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a> │         ├── Volume (N)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a> │         │    └── Niveau (N)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a> │         │         └── Room (N)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a> │         ├── PointCloud (N)
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a> │         │    ├── RasterPcd (N)
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a> │         │    └── Map3D (N)
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a> │         └── MaquetteGbxml (N)
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a> │
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>Panoramique
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a> ├── Geometry2D (N)
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a> └── Annotation (N)
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>      ├── FormulaireReponse (N)
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>      └── → Formulaire
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>               └── FormulaireChamp (N)
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>Auteur
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a> ├── → Annotation (N)
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a> └── → FormulaireReponse (N)
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>MateriauxTypes   (table de référence autonome utilisable par un FormulaireChamp)
+</span></code></pre></div>
+<blockquote>
+<p><strong>TODO</strong> : Générer et insérer un diagramme ERD (ex. avec <code>eralchemy</code>, <code>dbdiagram.io</code> ou <code>mermaid</code>) pour remplacer ou compléter le schéma texte ci-dessus.</p>
+</blockquote>
+<hr />
+<h2 id="tables">Tables</h2>
+<h3 id="site"><code>site</code></h3>
+<p>Représente une friche (ensemble de parcelles et de bâtiments).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td><strong>PK</strong></td>
+<td>Identifiant unique du site</td>
+</tr>
+<tr>
+<td><code>centroide</code></td>
+<td><code>POINT</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Centre géographique du site</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>POLYGON</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Emprise géographique du site</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>parcelles</code> → <code>Parcelle</code> (1-N)</li>
+<li><code>batiments</code> → <code>Batiment</code> (1-N)</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Informations sur la friche</p>
+<p>Cette table réunit les informations générales sur une friche. Des champs attributaires peuvent
+être ajouté pour compléter la base de données. De nombreuses informations sont disponibles via
+l'API swisstopo (pollution, ensoleillement, géométrie, RegBL, desserte TP ... etc).</p>
+</div>
+<hr />
+<h3 id="parcelle"><code>parcelle</code></h3>
+<p>Représente une parcelle du cadastre.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>egrid</code></td>
+<td><code>String(128)</code></td>
+<td><strong>PK</strong></td>
+<td>Identifiant fédéral de parcelle (EGRID)</td>
+</tr>
+<tr>
+<td><code>numero</code></td>
+<td><code>String(64)</code></td>
+<td>NOT NULL</td>
+<td>Numéro de parcelle</td>
+</tr>
+<tr>
+<td><code>commune</code></td>
+<td><code>String(128)</code></td>
+<td>NOT NULL</td>
+<td>Commune de la parcelle</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Surface en m²</td>
+</tr>
+<tr>
+<td><code>nom_site</code></td>
+<td><code>String(256)</code></td>
+<td>FK → <code>site.nom</code>, nullable</td>
+<td>Site de rattachement</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>POLYGON</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Emprise géographique</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>site</code> → <code>Site</code> (N-1)</li>
+<li><code>batiments</code> → <code>Batiment</code> (1-N)</li>
+</ul>
+<hr />
+<h3 id="batiment"><code>batiment</code></h3>
+<p>Représente un bâtiment au sens du registre fédéral des bâtiments et logements (RegBL).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>egid</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> (non auto)</td>
+<td>Identifiant fédéral du bâtiment (EGID)</td>
+</tr>
+<tr>
+<td><code>angle</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Angle d'orientation du bâtiment par rapport au nord (degrés sens anti-horaire)</td>
+</tr>
+<tr>
+<td><code>parcelle_egrid</code></td>
+<td><code>String</code></td>
+<td>FK → <code>parcelle.egrid</code>, nullable</td>
+<td>Parcelle de rattachement</td>
+</tr>
+<tr>
+<td><code>nom_site</code></td>
+<td><code>String</code></td>
+<td>FK → <code>site.nom</code>, nullable</td>
+<td>Site de rattachement direct</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>JSON → (x, y, z)</code></td>
+<td>nullable</td>
+<td>Décalage de coordonnées pour la définition de l'origine local</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>POLYGON</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Emprise au sol</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>parcelle</code> → <code>Parcelle</code> (N-1)</li>
+<li><code>site</code> → <code>Site</code> (N-1)</li>
+<li><code>volumes</code> → <code>Volume</code> (1-N)</li>
+<li><code>pointclouds</code> → <code>PointCloud</code> (1-N)</li>
+<li><code>maquettes_gbxml</code> → <code>MaquetteGbxml</code> (1-N)</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Paramètres du bâtiment</p>
+<p>Les attributs <code>angle</code> et <code>offset</code> sont des paramètres utilent pour centrer et aligner le bâtiment dans un référentiel local
+tout en conservant le géoréférencement.</p>
+</div>
+<hr />
+<div class="admonition warning">
+<p class="admonition-title">Construction des sous-divisions <code>volume</code>-<code>niveau</code>-<code>room</code></p>
+<p>Il n'y a pas d'interface permettant une construction des <code>volume</code>, <code>niveau</code> et <code>room</code> pour le moment. Ce sont des éléments de
+segmentation du bâtiment pour aider l'utilisateur à organiser et traiter les données et informations. En fonction de l'état
+d'avancement du chantier, il est possible de réaliser plusieurs "construction", l'attribut <code>modelisation</code> permet de les nommer
+pour le distinguer.</p>
+<p>Cette hiérarchie n'est pas nécessaire pour le bon fonctionnement du projet.</p>
+</div>
+<h3 id="volume"><code>volume</code></h3>
+<p>Sous-division volumétrique d'un bâtiment (ex. : cage d'escalier, aile, bloc…).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom du volume</td>
+</tr>
+<tr>
+<td><code>modelisation</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom de la modélisation</td>
+</tr>
+<tr>
+<td><code>volume</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Volume en m³</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Surface au sol en m²</td>
+</tr>
+<tr>
+<td><code>egid_batis</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>batiment.egid</code>, nullable</td>
+<td>Bâtiment parent</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>POLYGON</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Emprise au sol</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>batiment</code> → <code>Batiment</code> (N-1)</li>
+<li><code>niveaux</code> → <code>Niveau</code> (1-N)</li>
+</ul>
+<hr />
+<h3 id="niveau"><code>niveau</code></h3>
+<p>Étage ou niveau d'un volume.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom ou label du niveau (ex. : « RDC », « R+1 »)</td>
+</tr>
+<tr>
+<td><code>hmin</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Hauteur minimale</td>
+</tr>
+<tr>
+<td><code>hmax</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Hauteur maximale</td>
+</tr>
+<tr>
+<td><code>volume</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Volume du niveau en m³</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Surface du niveau en m²</td>
+</tr>
+<tr>
+<td><code>id_volume</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>volume.id</code>, nullable</td>
+<td>Volume parent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>volume_obj</code> → <code>Volume</code> (N-1)</li>
+<li><code>rooms</code> → <code>Room</code> (1-N)</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Paramètres du niveau</p>
+<p>La hauteur mininale et maximale d'un niveau est exprimé en mètre dans le référentiel du nuage de point</p>
+</div>
+<hr />
+<h3 id="room"><code>room</code></h3>
+<p>Pièce ou local au sein d'un niveau.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom de la pièce</td>
+</tr>
+<tr>
+<td><code>volume</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Volume en m³</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Surface en m²</td>
+</tr>
+<tr>
+<td><code>id_niveau</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>niveau.id</code>, nullable</td>
+<td>Niveau parent</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>POLYGON</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Emprise au sol</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>niveau</code> → <code>Niveau</code> (N-1)</li>
+</ul>
+<hr />
+<h3 id="maquette_gbxml"><code>maquette_gbxml</code></h3>
+<p>Maquette numérique d'un bâtiment au format gbXML.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant</td>
+</tr>
+<tr>
+<td><code>date_generation</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date de génération de la maquette</td>
+</tr>
+<tr>
+<td><code>attribut1</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Exemple d'attribut</td>
+</tr>
+<tr>
+<td><code>attribut2</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Exemple d'attribut</td>
+</tr>
+<tr>
+<td><code>regbl_path</code></td>
+<td><code>String(512)</code></td>
+<td>nullable</td>
+<td>Chemin vers le fichier <code>.gbxml</code></td>
+</tr>
+<tr>
+<td><code>egid_batis</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>batiment.egid</code>, nullable</td>
+<td>EGID Bâtiment</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>JSON → (x, y, z)</code></td>
+<td>nullable</td>
+<td>Origine de la maquette</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>batiment</code> → <code>Batiment</code> (N-1)</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Développement en cours</p>
+<p>Les attributs <code>attribut1</code> et <code>attribut2</code> sont des <strong>placeholders temporaires</strong> issus du fichier
+Swissbuilding 3.0 utilisé pour générer la maquette gbXML. Les attributs définitifs seront
+intégrés à la table <code>maquette_gbxml</code> une fois leur structure stabilisée.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Remarque</p>
+<p>Pour plus d'informations sur les maquettes gbXML, se référer à la page TODO</p>
+</div>
+<hr />
+<h3 id="pointcloud"><code>pointcloud</code></h3>
+<p>Nuage de points 3D (PCD) associé à un bâtiment.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom du PCD</td>
+</tr>
+<tr>
+<td><code>source_sensor</code></td>
+<td><code>String(128)</code></td>
+<td>nullable</td>
+<td>Capteur d'acquisition</td>
+</tr>
+<tr>
+<td><code>date_acquisition</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date d'acquisition</td>
+</tr>
+<tr>
+<td><code>date_traitement</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date de traitement</td>
+</tr>
+<tr>
+<td><code>crs</code></td>
+<td><code>String(64)</code></td>
+<td>nullable</td>
+<td>Système de coordonnées du PCD</td>
+</tr>
+<tr>
+<td><code>sampling</code></td>
+<td><code>Integer</code></td>
+<td>nullable</td>
+<td>Sous-échantillonnage (mm)</td>
+</tr>
+<tr>
+<td><code>angle</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Angle d'orientation issue du <code>batiment</code></td>
+</tr>
+<tr>
+<td><code>is_merged</code></td>
+<td><code>Boolean</code></td>
+<td>défaut <code>False</code></td>
+<td>Nuage issue d'une fusion</td>
+</tr>
+<tr>
+<td><code>is_filtered</code></td>
+<td><code>Boolean</code></td>
+<td>défaut <code>False</code></td>
+<td>Filtrage des outliers</td>
+</tr>
+<tr>
+<td><code>is_indexed</code></td>
+<td><code>Boolean</code></td>
+<td>défaut <code>False</code></td>
+<td>Indexation des points du nuage</td>
+</tr>
+<tr>
+<td><code>is_classified</code></td>
+<td><code>Boolean</code></td>
+<td>défaut <code>False</code></td>
+<td>Classification automatique</td>
+</tr>
+<tr>
+<td><code>egid_batis</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>batiment.egid</code>, nullable</td>
+<td>Bâtiment associé</td>
+</tr>
+<tr>
+<td><code>source_index</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>pointcloud.id</code>, nullable</td>
+<td>Provenance de l'indexation dans le cas ou le PCD est un sous ensemble d'un autre PCD</td>
+</tr>
+<tr>
+<td><code>source_idx_pcd</code></td>
+<td><code>JSON → [int]</code></td>
+<td>nullable</td>
+<td>Liste des ID(s) des PCD utilisé(s) pour constituer ce PCD (fusion, sous-ensemble)</td>
+</tr>
+<tr>
+<td><code>scan_position</code></td>
+<td><code>JSON → {x, y, z}</code></td>
+<td>nullable</td>
+<td>Position du scanner</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>JSON → (x, y, z)</code></td>
+<td>nullable</td>
+<td>Décalage de coordonnées</td>
+</tr>
+<tr>
+<td><code>scan_rotation</code></td>
+<td><code>JSON → 3×3</code></td>
+<td>nullable</td>
+<td>Matrice de rotation du capteur (Sensor → World)</td>
+</tr>
+<tr>
+<td><code>bbox</code></td>
+<td><code>JSON → [[x,y,z]×8]</code></td>
+<td>nullable</td>
+<td>Bounding box 3D (8 sommets)</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>POLYGON</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Emprise au sol</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>batiment</code> → <code>Batiment</code> (N-1)</li>
+<li><code>maps_3d</code> → <code>Map3D</code> (1-N)</li>
+<li><code>rasters</code> → <code>RasterPcd</code> (1-N)</li>
+</ul>
+<p>Lorsqu'un Nuage de points est crée et ajouté au projet, les métadonnées associé sont sauvegardé dans la table <code>pointcloud</code> pour garantir la traçabilité.
+Cela permet d'abord de conserver les informations essentielles (capteur utilisé, date d'acquisition, CRS, échantillonnage ... etc), mais aussi les liens entre nuages de points.</p>
+<p>Dans le cas ou un nuage de points provient d'un traitement sur un ou plusieurs nuage(s) de points source (fusion, sous-ensemble), le/les <code>id</code> de ces nuages de points sont stocké dans <code>source_idx_pcd</code>.
+Si le nuage de points produit est un sous-ensemble d'un autre nuage qui possède une indexation, il est possible de conserver cette indexation avec <code>source_index</code>. Cela permet de conserver
+la fusion 3D/images.</p>
+<hr />
+<h3 id="raster_pcd"><code>raster_pcd</code></h3>
+<p>Image raster dérivée d'un nuage de points (projection selon un axe).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom du raster</td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Résolution en m/pixel</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td><code>String(128)</code></td>
+<td>nullable</td>
+<td>Mode d'image</td>
+</tr>
+<tr>
+<td><code>axis</code></td>
+<td><code>String(16)</code></td>
+<td>nullable</td>
+<td>Axe de projection</td>
+</tr>
+<tr>
+<td><code>angle</code></td>
+<td><code>Float</code></td>
+<td>nullable</td>
+<td>Angle de rotation avant projection</td>
+</tr>
+<tr>
+<td><code>is_aligned</code></td>
+<td><code>Boolean</code></td>
+<td>défaut <code>False</code></td>
+<td>Raster réaligné</td>
+</tr>
+<tr>
+<td><code>id_pcd</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>pointcloud.id</code>, nullable</td>
+<td>PCD source</td>
+</tr>
+<tr>
+<td><code>gridsize</code></td>
+<td><code>JSON → [xmin, xmax, ymin, ymax]</code></td>
+<td>nullable</td>
+<td>Emprise de la grille</td>
+</tr>
+<tr>
+<td><code>center</code></td>
+<td><code>JSON → {x, y}</code></td>
+<td>nullable</td>
+<td>Centre de la grille</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>JSON → (x, y, z)</code></td>
+<td>nullable</td>
+<td>Décalage de coordonnées</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>pointcloud</code> → <code>PointCloud</code> (N-1)</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Remarque</p>
+<p>Pour plus d'informations sur les rasters, se référer à la page TODO</p>
+</div>
+<hr />
+<h3 id="map_3d"><code>map_3d</code></h3>
+<p>Carte ou scène 3D issue d'un nuage de points.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>sequencename</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom de la séquence associée</td>
+</tr>
+<tr>
+<td><code>foldername</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Dossier des données</td>
+</tr>
+<tr>
+<td><code>id_pcd</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>pointcloud.id</code>, nullable</td>
+<td>Nuage de points source</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>pointcloud</code> → <code>PointCloud</code> (N-1)</li>
+</ul>
+<blockquote>
+<p><strong>TODO</strong> : Préciser le format et l'usage de la Map3D (viewer web, export Potree, 3D Tiles…).</p>
+</blockquote>
+<hr />
+<h3 id="panoramique"><code>panoramique</code></h3>
+<p>Image panoramique à 360° acquise sur le terrain.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>sequencename</code></td>
+<td><code>String(256)</code></td>
+<td>NOT NULL</td>
+<td>Nom de la séquence de capture</td>
+</tr>
+<tr>
+<td><code>panoname</code></td>
+<td><code>String(256)</code></td>
+<td>NOT NULL</td>
+<td>Nom de l'image panoramique</td>
+</tr>
+<tr>
+<td><code>date_acquisition</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date d'acquisition</td>
+</tr>
+<tr>
+<td><code>date_traitement</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date de traitement</td>
+</tr>
+<tr>
+<td><code>camera_model</code></td>
+<td><code>String(128)</code></td>
+<td>nullable</td>
+<td>Modèle de caméra</td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td><code>String(64)</code></td>
+<td>nullable</td>
+<td>Résolution de l'image</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>POINTZ</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Position géographique 3D du centre optique</td>
+</tr>
+<tr>
+<td><code>orientation</code></td>
+<td><code>JSON → 3×3</code></td>
+<td>nullable</td>
+<td>Matrice de rotation de la caméra</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>geometries_2d</code> → <code>Geometry2D</code> (1-N)</li>
+<li><code>annotations</code> → <code>Annotation</code> (1-N)</li>
+</ul>
+<blockquote>
+<p><strong>TODO</strong> : Décrire le mode d'acquisition (caméra embarquée, trépied, drone…) et le format de stockage des images.</p>
+</blockquote>
+<hr />
+<h3 id="geometry_2d"><code>geometry_2d</code></h3>
+<p>Géométrie dessinée dans l'espace image d'un panoramique (coordonnées pixel).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>panoname</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom du panoramique (dénormalisé)</td>
+</tr>
+<tr>
+<td><code>sequencename</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom de la séquence (dénormalisé)</td>
+</tr>
+<tr>
+<td><code>type_geometry</code></td>
+<td><code>Enum(TypeGeometry)</code></td>
+<td>nullable</td>
+<td>Type : <code>point</code>, <code>line</code>, <code>polygon</code>, <code>segment</code></td>
+</tr>
+<tr>
+<td><code>id_pano</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>panoramique.id</code>, nullable</td>
+<td>Panoramique parent</td>
+</tr>
+<tr>
+<td><code>geometry_geom</code></td>
+<td><code>GEOMETRY</code> (SRID 0)</td>
+<td>nullable</td>
+<td>Géométrie en coords pixel</td>
+</tr>
+<tr>
+<td><code>segment_index</code></td>
+<td><code>Text</code></td>
+<td>nullable</td>
+<td>Indice de segment (si type <code>segment</code>)</td>
+</tr>
+<tr>
+<td><code>centroide_2d</code></td>
+<td><code>POINT</code> (SRID 0)</td>
+<td>nullable</td>
+<td>Centroïde en coords pixel</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Enum <code>TypeGeometry</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Valeur</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>point</code></td>
+<td>Point unique</td>
+</tr>
+<tr>
+<td><code>line</code></td>
+<td>Polyligne</td>
+</tr>
+<tr>
+<td><code>polygon</code></td>
+<td>Polygone fermé</td>
+</tr>
+<tr>
+<td><code>segment</code></td>
+<td>Référence à un segment par indice entier</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>panoramique</code> → <code>Panoramique</code> (N-1)</li>
+</ul>
+<blockquote>
+<p><strong>TODO</strong> : Expliquer pourquoi <code>panoname</code> et <code>sequencename</code> sont dénormalisés (performance ? héritage ?).</p>
+</blockquote>
+<hr />
+<h3 id="annotation"><code>annotation</code></h3>
+<p>Observation pointée sur un panoramique, liée à une ou plusieurs géométries 2D et à un formulaire de saisie.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>panoname</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom du panoramique (dénormalisé)</td>
+</tr>
+<tr>
+<td><code>sequencename</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Nom de la séquence (dénormalisé)</td>
+</tr>
+<tr>
+<td><code>date_saisie</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date de saisie</td>
+</tr>
+<tr>
+<td><code>permission</code></td>
+<td><code>Integer</code></td>
+<td>nullable</td>
+<td>Niveau de permission (<strong>TODO</strong> : valeurs ?)</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Label / catégorie de l'annotation</td>
+</tr>
+<tr>
+<td><code>commentaire</code></td>
+<td><code>Text</code></td>
+<td>nullable</td>
+<td>Commentaire libre</td>
+</tr>
+<tr>
+<td><code>id_pano</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>panoramique.id</code>, nullable</td>
+<td>Panoramique associé</td>
+</tr>
+<tr>
+<td><code>auteur</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>auteur.id</code>, nullable</td>
+<td>Auteur de l'annotation</td>
+</tr>
+<tr>
+<td><code>domaine_form</code></td>
+<td><code>String</code></td>
+<td>FK → <code>formulaire.name</code>, nullable</td>
+<td>Formulaire de saisie associé</td>
+</tr>
+<tr>
+<td><code>id_union_geom</code></td>
+<td><code>JSON → [int]</code></td>
+<td>nullable</td>
+<td>Liste des IDs <code>Geometry2D</code> composant l'annotation</td>
+</tr>
+<tr>
+<td><code>centroide_3d</code></td>
+<td><code>POINTZ</code> (SRID 2056)</td>
+<td>nullable</td>
+<td>Position 3D reconstruite de l'annotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>panoramique</code> → <code>Panoramique</code> (N-1)</li>
+<li><code>reponses</code> → <code>FormulaireReponse</code> (1-N)</li>
+<li><code>auteur_obj</code> → <code>Auteur</code> (N-1)</li>
+</ul>
+<blockquote>
+<p><strong>TODO</strong> : Décrire comment <code>centroide_3d</code> est calculé (raycasting sur nuage de points ?).<br />
+<strong>TODO</strong> : Clarifier la sémantique de <code>permission</code> (lecture seule, éditable, public…).</p>
+</blockquote>
+<hr />
+<h3 id="formulaire"><code>formulaire</code></h3>
+<p>Définition d'un formulaire de saisie (structure, pas les données).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>String(256)</code></td>
+<td>UNIQUE, NOT NULL</td>
+<td>Identifiant textuel du formulaire</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>Text</code></td>
+<td>nullable</td>
+<td>Description du formulaire</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>champs</code> → <code>FormulaireChamp</code> (1-N, ordonnés par <code>ordre</code>)</li>
+<li><code>reponses</code> → <code>FormulaireReponse</code> (1-N)</li>
+</ul>
+<hr />
+<h3 id="formulaire_champ"><code>formulaire_champ</code></h3>
+<p>Un champ d'un formulaire (définit la structure, pas la valeur).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td>NOT NULL</td>
+<td>Clé du champ (utilisée dans le JSON des réponses)</td>
+</tr>
+<tr>
+<td><code>type_champ</code></td>
+<td><code>Enum(TypeChamp)</code></td>
+<td>NOT NULL</td>
+<td>Type de champ</td>
+</tr>
+<tr>
+<td><code>obligatoire</code></td>
+<td><code>Boolean</code></td>
+<td>défaut <code>False</code></td>
+<td>Champ obligatoire</td>
+</tr>
+<tr>
+<td><code>ordre</code></td>
+<td><code>Integer</code></td>
+<td>défaut <code>0</code></td>
+<td>Ordre d'affichage</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>Text</code></td>
+<td>nullable</td>
+<td>Description du champs</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>JSON → [str]</code></td>
+<td>nullable</td>
+<td>Options pour les types <code>select</code></td>
+</tr>
+<tr>
+<td><code>id_formulaire</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>formulaire.id</code>, CASCADE</td>
+<td>Formulaire parent</td>
+</tr>
+<tr>
+<td><code>source_table</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Table source pour <code>select_table</code> (ex. : <code>materiaux_types</code>)</td>
+</tr>
+<tr>
+<td><code>source_label_col</code></td>
+<td><code>String(128)</code></td>
+<td>nullable</td>
+<td>Colonne à afficher pour <code>select_table</code> (ex. : <code>nom</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Enum <code>TypeChamp</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Valeur</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td>Champ texte court</td>
+</tr>
+<tr>
+<td><code>textarea</code></td>
+<td>Champ texte long</td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td>Valeur numérique</td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td>Oui / Non</td>
+</tr>
+<tr>
+<td><code>select</code></td>
+<td>Liste déroulante (options statiques dans <code>_options</code>)</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>Date</td>
+</tr>
+<tr>
+<td><code>select_table</code></td>
+<td>Liste déroulante dynamique depuis une table comme materiaux_types</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>formulaire</code> → <code>Formulaire</code> (N-1)</li>
+</ul>
+<hr />
+<h3 id="formulaire_reponse"><code>formulaire_reponse</code></h3>
+<p>Une réponse complète à un formulaire, liée à une annotation.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>date_saisie</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date de saisie de la réponse</td>
+</tr>
+<tr>
+<td><code>id_formulaire</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>formulaire.id</code>, CASCADE</td>
+<td>Formulaire concerné</td>
+</tr>
+<tr>
+<td><code>id_annotation</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>annotation.id</code>, nullable</td>
+<td>Annotation associée</td>
+</tr>
+<tr>
+<td><code>auteur</code></td>
+<td><code>Integer</code></td>
+<td>FK → <code>auteur.id</code>, nullable</td>
+<td>Auteur de la réponse</td>
+</tr>
+<tr>
+<td><code>valeurs</code></td>
+<td><code>JSON → {clé: valeur}</code></td>
+<td>nullable</td>
+<td>Valeurs saisies (clés = <code>nom</code> des champs)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple de <code>valeurs</code></strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;gravite&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;moyen&quot;</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;surface_m2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">12.5</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;commentaire&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fissure en façade&quot;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>formulaire</code> → <code>Formulaire</code> (N-1)</li>
+<li><code>annotation</code> → <code>Annotation</code> (N-1)</li>
+<li><code>auteur_obj</code> → <code>Auteur</code> (N-1)</li>
+</ul>
+<hr />
+<h3 id="auteur"><code>auteur</code></h3>
+<p>Utilisateur ou opérateur ayant saisi des données.</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(128)</code></td>
+<td>NOT NULL</td>
+<td>Nom de famille</td>
+</tr>
+<tr>
+<td><code>prenom</code></td>
+<td><code>String(128)</code></td>
+<td>nullable</td>
+<td>Prénom</td>
+</tr>
+<tr>
+<td><code>date_enregistrement</code></td>
+<td><code>String(32)</code></td>
+<td>nullable</td>
+<td>Date de création du compte</td>
+</tr>
+<tr>
+<td><code>entreprise</code></td>
+<td><code>String(256)</code></td>
+<td>nullable</td>
+<td>Entreprise / organisation</td>
+</tr>
+<tr>
+<td><code>role</code></td>
+<td><code>String(128)</code></td>
+<td>nullable</td>
+<td>Rôle (<strong>TODO</strong> : valeurs possibles ?)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relations</strong></p>
+<ul>
+<li><code>annotations</code> → <code>Annotation</code> (1-N)</li>
+<li><code>reponses</code> → <code>FormulaireReponse</code> (1-N)</li>
+</ul>
+<blockquote>
+<p><strong>TODO</strong> : Préciser si <code>auteur</code> est lié à un système d'authentification externe (SSO, OAuth…).<br />
+<strong>TODO</strong> : Documenter les valeurs possibles de <code>role</code>.</p>
+</blockquote>
+<hr />
+<h3 id="materiaux_types"><code>materiaux_types</code></h3>
+<p>Table de référence des types de matériaux (utilisée comme source pour des champs <code>select_table</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Contrainte</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>Integer</code></td>
+<td><strong>PK</strong> auto</td>
+<td>Identifiant interne</td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>String(256)</code></td>
+<td>UNIQUE, NOT NULL</td>
+<td>Nom du matériau</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>Text</code></td>
+<td>nullable</td>
+<td>Description du matériau</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>TODO</strong> : Lister les matériaux de référence initialement peuplés dans la table.<br />
+<strong>TODO</strong> : Décrire le processus de maintenance de cette table (qui peut ajouter / modifier des entrées ?).</p>
+</blockquote>
+<hr />
+<h2 id="conventions-techniques">Conventions techniques</h2>
+<h3 id="champs-geographiques">Champs géographiques</h3>
+<p>Toutes les géométries géoréférencées utilisent le <strong>SRID 2056</strong> (MN95 / LV95). Les géométries 2D en espace image (<code>Geometry2D</code>) utilisent le <strong>SRID 0</strong> (coordonnées pixel sans projection).</p>
+<p>La bibliothèque utilisée est <a href="https://geoalchemy-2.readthedocs.io/">GeoAlchemy2</a>.</p>
+<h3 id="champs-json">Champs JSON</h3>
+<p>Certaines colonnes stockent des structures complexes sérialisées en JSON dans des champs <code>Text</code>. Elles sont exposées via des propriétés Python (<code>@property</code>) avec validation à la saisie :</p>
+<table>
+<thead>
+<tr>
+<th>Propriété</th>
+<th>Format attendu</th>
+<th>Tables concernées</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>offset</code></td>
+<td><code>(x, y, z)</code></td>
+<td><code>Batiment</code>, <code>PointCloud</code>, <code>MaquetteGbxml</code>, <code>RasterPcd</code></td>
+</tr>
+<tr>
+<td><code>scan_position</code></td>
+<td><code>{"x": float, "y": float, "z": float}</code></td>
+<td><code>PointCloud</code></td>
+</tr>
+<tr>
+<td><code>scan_rotation</code></td>
+<td>matrice 3×3</td>
+<td><code>PointCloud</code></td>
+</tr>
+<tr>
+<td><code>orientation</code></td>
+<td>matrice 3×3</td>
+<td><code>Panoramique</code></td>
+</tr>
+<tr>
+<td><code>bbox</code></td>
+<td>liste de points <code>[x, y, z]</code></td>
+<td><code>PointCloud</code></td>
+</tr>
+<tr>
+<td><code>gridsize</code></td>
+<td><code>[xmin, xmax, ymin, ymax]</code></td>
+<td><code>RasterPcd</code></td>
+</tr>
+<tr>
+<td><code>center</code></td>
+<td><code>{"x": float, "y": float}</code></td>
+<td><code>RasterPcd</code></td>
+</tr>
+<tr>
+<td><code>valeurs</code></td>
+<td><code>dict</code> libre</td>
+<td><code>FormulaireReponse</code></td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>[str]</code></td>
+<td><code>FormulaireChamp</code></td>
+</tr>
+<tr>
+<td><code>id_union_geom</code></td>
+<td><code>[int]</code></td>
+<td><code>Annotation</code></td>
+</tr>
+<tr>
+<td><code>source_idx_pcd</code></td>
+<td><code>[int]</code></td>
+<td><code>PointCloud</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="comportement-des-cles-etrangeres">Comportement des clés étrangères</h3>
+<table>
+<thead>
+<tr>
+<th>Comportement</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ON DELETE SET NULL</code></td>
+<td>Relation facultative — l'enregistrement fils survit à la suppression du parent</td>
+</tr>
+<tr>
+<td><code>ON DELETE CASCADE</code></td>
+<td>Relation obligatoire — la suppression du parent entraîne celle des fils (ex. : <code>FormulaireChamp</code>, <code>FormulaireReponse</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dates">Dates</h3>
+<p>Les dates sont stockées en <code>String(32)</code> sous le format <code>YYYY-MM-DD</code>.</p>
+<hr />
+<h2 id="todo-recapitulatif">TODO récapitulatif</h2>
+<ul>
+<li>[ ] Diagramme ERD visuel</li>
+<li>[ ] Clarifier la redondance <code>nom_site</code> sur <code>Batiment</code> vs via <code>Parcelle</code></li>
+<li>[ ] Référentiel altimétrique pour <code>hmin</code> / <code>hmax</code> dans <code>Niveau</code></li>
+<li>[ ] Format et stockage physique des fichiers PointCloud</li>
+<li>[ ] Valeurs possibles de <code>mode</code> dans <code>RasterPcd</code></li>
+<li>[ ] Usage de <code>Map3D</code> (Potree, 3D Tiles…)</li>
+<li>[ ] Mode d'acquisition et stockage des images <code>Panoramique</code></li>
+<li>[ ] Explication de la dénormalisation <code>panoname</code> / <code>sequencename</code> dans <code>Geometry2D</code> et <code>Annotation</code></li>
+<li>[ ] Sémantique de <code>permission</code> dans <code>Annotation</code></li>
+<li>[ ] Calcul de <code>centroide_3d</code> dans <code>Annotation</code></li>
+<li>[ ] Liste des formulaires existants en production</li>
+<li>[ ] Valeurs possibles de <code>role</code> dans <code>Auteur</code></li>
+<li>[ ] Lien éventuel entre <code>Auteur</code> et un système d'authentification</li>
+<li>[ ] Contenu initial de <code>MateriauxTypes</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2854 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://mydomain.org/mysite/visite%20virtuelle/API%20%26%20Base%20de%20donn%C3%A9es/2_database_crud/">
+      
+      
+        <link rel="prev" href="../1_database_architecture/">
+      
+      
+        <link rel="next" href="../3_api_routes/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>CRUD — Opérations sur la base de données - My site</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#crud-operations-sur-la-base-de-donnees" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My site" class="md-header__button md-logo" aria-label="My site" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My site
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CRUD — Opérations sur la base de données
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My site" class="md-nav__button md-logo" aria-label="My site" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    My site
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Welcome to MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IE
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    IE
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Api
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../IE/api/api_exemples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api exemples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../IE/api/api_routes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api routes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acquisition & traitement
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Acquisition & traitement
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/acquisition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1.Acquisition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Classification automatique
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/image-panoramique/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Images panoramiques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/option-panoramique/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Images panoramiques enrichies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/photogrammetrie-application/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Photogrammetrie - Mise en pratique
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/photogrammetrie/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.Photogrammetrie - Les concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline &amp; Récapitulatif
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../acquisition%20%26%20traitement/traitement-pcd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traitement nuage de points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/quickstart_user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart - Visite Virtuelle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structure_general/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure des fichiers — Viewers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structure_panoramic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure des fichiers — Panoramiques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structure_pointcloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structure des fichiers — Nuages de points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/structures_classes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    struct classes todo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Potree
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Potree
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../potree/Rasterisation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rasterisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../potree/pcd-extraction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporter un nuage de points Potree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visite virtuelle
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visite virtuelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_1" id="__nav_8_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API & Base de données
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API & Base de données
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1_database_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture de la base de données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CRUD — Opérations sur la base de données
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CRUD — Opérations sur la base de données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-commun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern commun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gestion-des-erreurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestion des erreurs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Géométries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entites-du-batiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entités du bâtiment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entités du bâtiment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_parcelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_parcelle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_batiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_batiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_niveau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_niveau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_room
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#panoramiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panoramiques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Panoramiques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_panoramique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_panoramique
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="add_panoramique">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#import-en-masse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import en masse
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annotations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Annotations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_geometry_2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_geometry_2d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_annotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formulaires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formulaires
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formulaires">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_formulaire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_formulaire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_formulaire_champ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_formulaire_champ
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_formulaire_reponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_formulaire_reponse
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nuage-de-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nuage de points
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Nuage de points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_pointcloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_pointcloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_map3d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_map3d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_raster_pcd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_raster_pcd
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maquette" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maquette
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Maquette">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_maquette_gbxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_maquette_gbxml
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_api_routes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Backend — Référence des routes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-commun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern commun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gestion-des-erreurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestion des erreurs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Géométries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entites-du-batiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entités du bâtiment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entités du bâtiment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_site
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_parcelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_parcelle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_batiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_batiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_niveau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_niveau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_room
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#panoramiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panoramiques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Panoramiques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_panoramique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_panoramique
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="add_panoramique">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#import-en-masse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import en masse
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annotations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Annotations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_geometry_2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_geometry_2d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_annotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formulaires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formulaires
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formulaires">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_formulaire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_formulaire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_formulaire_champ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_formulaire_champ
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_formulaire_reponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_formulaire_reponse
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nuage-de-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nuage de points
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Nuage de points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_pointcloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_pointcloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_map3d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_map3d
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_raster_pcd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_raster_pcd
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maquette" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maquette
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Maquette">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_maquette_gbxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_maquette_gbxml
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="crud-operations-sur-la-base-de-donnees">CRUD — Opérations sur la base de données</h1>
+<p>Le module <code>bdd/crud.py</code> expose des fonctions d'insertion pour chaque entité de la BDD.
+Toutes les fonctions suivent le même pattern : elles reçoivent une <code>session</code> SQLAlchemy,
+valident les données, insèrent l'objet et retournent l'instance créée.</p>
+<h2 id="conventions">Conventions</h2>
+<h3 id="pattern-commun">Pattern commun</h3>
+<p>Chaque fonction <code>add_*</code> suit ce schéma :</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">with</span> <span class="n">Session</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">obj</span> <span class="o">=</span> <span class="n">crud</span><span class="o">.</span><span class="n">add_xxx</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Le <code>session.commit()</code> n'est <strong>pas</strong> fait par les fonctions CRUD.
+C'est à l'appelant de committer ou rollback selon le résultat.</p>
+</div>
+<h3 id="gestion-des-erreurs">Gestion des erreurs</h3>
+<p>Deux helpers internes gèrent les cas d'erreur :</p>
+<table>
+<thead>
+<tr>
+<th>Helper</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_check_fk(session, model, pk, label)</code></td>
+<td>Vérifie qu'une clé étrangère existe, lève <code>ValueError</code> sinon</td>
+</tr>
+<tr>
+<td><code>_flush(session, obj, label)</code></td>
+<td>Ajoute et flush, rollback propre si <code>IntegrityError</code></td>
+</tr>
+</tbody>
+</table>
+<p>Toutes les fonctions lèvent <code>ValueError</code> en cas de données invalides ou de contrainte violée.</p>
+<h3 id="geometries">Géométries</h3>
+<p>Les géométries Shapely sont converties en WKB via <code>from_shape(..., srid=srid_swissrenov)</code>.
+Le SRID utilisé est <strong>2056</strong> (Swiss LV95) pour les géométries 3D, <strong>0</strong> pour les géométries 2D panoramiques.</p>
+<p>Les champs encodés en binaire (listes, matrices) utilisent <code>_encode()</code> / <code>_decode()</code> définis dans <code>models.py</code>.</p>
+<hr />
+<h2 id="entites-du-batiment">Entités du bâtiment</h2>
+<h3 id="add_site"><code>add_site</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">add_site</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">nom</span><span class="p">,</span> <span class="n">centroide</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extent_poly</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Site</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nom</code></td>
+<td><code>str</code></td>
+<td>✓</td>
+<td>Nom unique du site</td>
+</tr>
+<tr>
+<td><code>centroide</code></td>
+<td><code>Point</code></td>
+<td>—</td>
+<td>Point Shapely (x, y)</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>Polygon</code></td>
+<td>—</td>
+<td>Emprise du site</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si le nom existe déjà.</p>
+<hr />
+<h3 id="add_parcelle"><code>add_parcelle</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">add_parcelle</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">numero</span><span class="p">,</span> <span class="n">commune</span><span class="p">,</span> <span class="n">egrid</span><span class="p">,</span> <span class="n">nom_site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>             <span class="n">surface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extent_poly</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Parcelle</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>numero</code></td>
+<td><code>str</code></td>
+<td>✓</td>
+<td>Numéro de parcelle</td>
+</tr>
+<tr>
+<td><code>commune</code></td>
+<td><code>str</code></td>
+<td>✓</td>
+<td>Commune</td>
+</tr>
+<tr>
+<td><code>egrid</code></td>
+<td><code>str</code></td>
+<td>✓</td>
+<td>Identifiant EGRID (clé primaire)</td>
+</tr>
+<tr>
+<td><code>nom_site</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>FK → <code>Site.nom</code></td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>float</code></td>
+<td>—</td>
+<td>Surface en m²</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>Polygon</code></td>
+<td>—</td>
+<td>Emprise</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si <code>nom_site</code> introuvable ou <code>egrid</code> déjà existant.</p>
+<hr />
+<h3 id="add_batiment"><code>add_batiment</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">add_batiment</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">egid</span><span class="p">,</span> <span class="n">parcelle_egrid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nom_site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>             <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extent_poly</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Batiment</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>egid</code></td>
+<td><code>int</code></td>
+<td>✓</td>
+<td>Identifiant EGID (clé primaire)</td>
+</tr>
+<tr>
+<td><code>parcelle_egrid</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>FK → <code>Parcelle.egrid</code></td>
+</tr>
+<tr>
+<td><code>nom_site</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>FK → <code>Site.nom</code></td>
+</tr>
+<tr>
+<td><code>angle</code></td>
+<td><code>float</code></td>
+<td>—</td>
+<td>Angle d'orientation</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>tuple[float,float,float]</code></td>
+<td>—</td>
+<td>Décalage (x, y, z)</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>Polygon</code></td>
+<td>—</td>
+<td>Emprise</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si <code>parcelle_egrid</code> ou <code>nom_site</code> introuvables, ou <code>egid</code> déjà existant.</p>
+<hr />
+<h3 id="add_volume"><code>add_volume</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">add_volume</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">egid_batis</span><span class="p">,</span> <span class="n">nom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modelisation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>           <span class="n">volume</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extent_poly</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Volume</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>egid_batis</code></td>
+<td><code>int</code></td>
+<td>✓</td>
+<td>FK → <code>Batiment.egid</code></td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Nom du volume</td>
+</tr>
+<tr>
+<td><code>modelisation</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Type de modélisation</td>
+</tr>
+<tr>
+<td><code>volume</code></td>
+<td><code>float</code></td>
+<td>—</td>
+<td>Volume en m³</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>float</code></td>
+<td>—</td>
+<td>Surface en m²</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="add_niveau"><code>add_niveau</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">add_niveau</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_volume</span><span class="p">,</span> <span class="n">nom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>           <span class="n">volume</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surface</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Niveau</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_volume</code></td>
+<td><code>int</code></td>
+<td>✓</td>
+<td>FK → <code>Volume.id</code></td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Nom du niveau (ex: RDC, R+1)</td>
+</tr>
+<tr>
+<td><code>hmin</code></td>
+<td><code>float</code></td>
+<td>—</td>
+<td>Hauteur minimale en m</td>
+</tr>
+<tr>
+<td><code>hmax</code></td>
+<td><code>float</code></td>
+<td>—</td>
+<td>Hauteur maximale en m</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="add_room"><code>add_room</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">add_room</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_niveau</span><span class="p">,</span> <span class="n">nom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>         <span class="n">surface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extent_poly</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Room</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_niveau</code></td>
+<td><code>int</code></td>
+<td>✓</td>
+<td>FK → <code>Niveau.id</code></td>
+</tr>
+<tr>
+<td><code>nom</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Nom de la pièce</td>
+</tr>
+<tr>
+<td><code>extent_poly</code></td>
+<td><code>Polygon</code></td>
+<td>—</td>
+<td>Emprise de la pièce</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="panoramiques">Panoramiques</h2>
+<h3 id="add_panoramique"><code>add_panoramique</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">add_panoramique</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">sequencename</span><span class="p">,</span> <span class="n">panoname</span><span class="p">,</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>                <span class="n">date_acquisition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_traitement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>                <span class="n">camera_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>                <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Panoramique</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sequencename</code></td>
+<td><code>str</code></td>
+<td>✓</td>
+<td>Nom de la séquence</td>
+</tr>
+<tr>
+<td><code>panoname</code></td>
+<td><code>str</code></td>
+<td>✓</td>
+<td>Nom du panoramique (ex: <code>pano_0075</code>)</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>Point</code></td>
+<td>—</td>
+<td>Position 3D (x, y, z) en LV95</td>
+</tr>
+<tr>
+<td><code>orientation</code></td>
+<td><code>list[list[float]]</code></td>
+<td>—</td>
+<td>Matrice de rotation 3×3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si <code>orientation</code> n'est pas une matrice 3×3.</p>
+<h4 id="import-en-masse">Import en masse</h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">crud</span><span class="o">.</span><span class="n">import_sequence_json</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;chemin/vers/sequence.json&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Importe tous les panoramiques depuis un fichier JSON structuré :</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;sequence_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">&quot;sequencename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GS018175&quot;</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">&quot;date_acquisition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-07-08&quot;</span><span class="p">,</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">&quot;camera&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GoPro Max&quot;</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nt">&quot;pano_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">      </span><span class="nt">&quot;panoname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pano_0075&quot;</span><span class="p">,</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">      </span><span class="nt">&quot;position&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">2538123.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1181456.0</span><span class="p">,</span><span class="w"> </span><span class="mf">490.5</span><span class="p">],</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">      </span><span class="nt">&quot;orientation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="annotations">Annotations</h2>
+<h3 id="add_geometry_2d"><code>add_geometry_2d</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">add_geometry_2d</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_pano</span><span class="p">,</span> <span class="n">type_geometry</span><span class="p">,</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>                <span class="n">panoname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequencename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>                <span class="n">geometry_geom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segment_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>                <span class="n">centroide_2d</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Geometry2D</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_pano</code></td>
+<td><code>int</code></td>
+<td>✓</td>
+<td>FK → <code>Panoramique.id</code></td>
+</tr>
+<tr>
+<td><code>type_geometry</code></td>
+<td><code>TypeGeometry</code></td>
+<td>✓</td>
+<td><code>POINT</code>, <code>LINE</code>, <code>POLYGON</code> ou <code>SEGMENT</code></td>
+</tr>
+<tr>
+<td><code>geometry_geom</code></td>
+<td><code>Point\|LineString\|Polygon</code></td>
+<td>Selon type</td>
+<td>Géométrie Shapely (pas pour SEGMENT)</td>
+</tr>
+<tr>
+<td><code>segment_index</code></td>
+<td><code>list[int]</code></td>
+<td>Pour SEGMENT</td>
+<td>Liste d'indices SAM</td>
+</tr>
+<tr>
+<td><code>centroide_2d</code></td>
+<td><code>Point</code></td>
+<td>—</td>
+<td>Centroïde en coordonnées image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Règles de cohérence :</strong></p>
+<table>
+<thead>
+<tr>
+<th><code>type_geometry</code></th>
+<th><code>geometry_geom</code></th>
+<th><code>segment_index</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POINT</code></td>
+<td>requis</td>
+<td>interdit</td>
+</tr>
+<tr>
+<td><code>LINE</code></td>
+<td>requis</td>
+<td>interdit</td>
+</tr>
+<tr>
+<td><code>POLYGON</code></td>
+<td>requis</td>
+<td>interdit</td>
+</tr>
+<tr>
+<td><code>SEGMENT</code></td>
+<td>interdit</td>
+<td>requis</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="add_annotation"><code>add_annotation</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">add_annotation</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_pano</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">panoname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>               <span class="n">sequencename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">commentaire</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>               <span class="n">permission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_saisie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">auteur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>               <span class="n">domaine_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">id_union_geom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>               <span class="n">centroide_3d</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Annotation</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Requis</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_pano</code></td>
+<td><code>int</code></td>
+<td>✓</td>
+<td>FK → <code>Panoramique.id</code></td>
+</tr>
+<tr>
+<td><code>panoname</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Nom du panoramique (dénormalisé)</td>
+</tr>
+<tr>
+<td><code>sequencename</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>Nom de la séquence (dénormalisé)</td>
+</tr>
+<tr>
+<td><code>domaine_form</code></td>
+<td><code>str</code></td>
+<td>—</td>
+<td>FK → <code>Formulaire.name</code></td>
+</tr>
+<tr>
+<td><code>id_union_geom</code></td>
+<td><code>list[int]</code></td>
+<td>—</td>
+<td>Liste de FK → <code>Geometry2D.id</code></td>
+</tr>
+<tr>
+<td><code>centroide_3d</code></td>
+<td><code>Point</code></td>
+<td>—</td>
+<td>Position 3D en LV95</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si <code>domaine_form</code> introuvable ou si un id dans <code>id_union_geom</code> est inexistant.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>id_union_geom</code> est une liste car une annotation peut référencer plusieurs géométries (ex: multi-polygone SAM).</p>
+</div>
+<hr />
+<h2 id="formulaires">Formulaires</h2>
+<h3 id="add_formulaire"><code>add_formulaire</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">add_formulaire</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Formulaire</span>
+</span></code></pre></div>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si le <code>name</code> existe déjà.</p>
+<hr />
+<h3 id="add_formulaire_champ"><code>add_formulaire_champ</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">add_formulaire_champ</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_formulaire</span><span class="p">,</span> <span class="n">nom</span><span class="p">,</span> <span class="n">type_champ</span><span class="p">,</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>                     <span class="n">ordre</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">obligatoire</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>                     <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>                     <span class="n">source_label_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">FormulaireChamp</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th><code>type_champ</code></th>
+<th>Paramètres requis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TEXT</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>NUMBER</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DATE</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SELECT</code></td>
+<td><code>options: list[str]</code></td>
+</tr>
+<tr>
+<td><code>SELECT_TABLE</code></td>
+<td><code>source_table</code>, <code>source_label_col</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si incohérence entre <code>type_champ</code> et les paramètres fournis.</p>
+<hr />
+<h3 id="add_formulaire_reponse"><code>add_formulaire_reponse</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">add_formulaire_reponse</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_formulaire</span><span class="p">,</span> <span class="n">id_annotation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>                       <span class="n">auteur</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_saisie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>                       <span class="n">valeurs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">FormulaireReponse</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_formulaire</code></td>
+<td><code>int</code></td>
+<td>FK → <code>Formulaire.id</code></td>
+</tr>
+<tr>
+<td><code>id_annotation</code></td>
+<td><code>int</code></td>
+<td>FK → <code>Annotation.id</code></td>
+</tr>
+<tr>
+<td><code>valeurs</code></td>
+<td><code>dict</code></td>
+<td><code>{"nom_champ": valeur, ...}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation des valeurs :</strong></p>
+<ul>
+<li>Les clés de <code>valeurs</code> doivent correspondre aux champs du formulaire</li>
+<li>Les champs <code>obligatoire=True</code> doivent être présents dans <code>valeurs</code></li>
+</ul>
+<p><strong>Erreurs</strong> : <code>ValueError</code> si clés inconnues ou champs obligatoires manquants.</p>
+<hr />
+<h2 id="nuage-de-points">Nuage de points</h2>
+<h3 id="add_pointcloud"><code>add_pointcloud</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">add_pointcloud</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">egid_batis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span> <span class="err">→</span> <span class="n">PointCloud</span>
+</span></code></pre></div>
+<p>Paramètres notables :</p>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scan_position</code></td>
+<td><code>Point</code></td>
+<td>Position 3D du scanner</td>
+</tr>
+<tr>
+<td><code>scan_rotation</code></td>
+<td><code>list[list[float]]</code></td>
+<td>Matrice de rotation 3×3</td>
+</tr>
+<tr>
+<td><code>bbox</code></td>
+<td><code>list[tuple]</code></td>
+<td>Boîte englobante (liste de points 3D)</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>tuple[float,float,float]</code></td>
+<td>Décalage (x, y, z)</td>
+</tr>
+<tr>
+<td><code>is_merged</code></td>
+<td><code>bool</code></td>
+<td>Nuage fusionné</td>
+</tr>
+<tr>
+<td><code>is_classified</code></td>
+<td><code>bool</code></td>
+<td>Nuage classifié</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="add_map3d"><code>add_map3d</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">add_map3d</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_pcd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequencename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>          <span class="n">foldername</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">Map3D</span>
+</span></code></pre></div>
+<hr />
+<h3 id="add_raster_pcd"><code>add_raster_pcd</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">add_raster_pcd</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">id_pcd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>               <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_aligned</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>               <span class="n">gridsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">RasterPcd</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Contrainte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>axis</code></td>
+<td>Doit être <code>'x'</code>, <code>'y'</code> ou <code>'z'</code></td>
+</tr>
+<tr>
+<td><code>gridsize</code></td>
+<td>Liste de 4 valeurs <code>[xmin, xmax, ymin, ymax]</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="maquette">Maquette</h2>
+<h3 id="add_maquette_gbxml"><code>add_maquette_gbxml</code></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">add_maquette_gbxml</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">egid_batis</span><span class="p">,</span> <span class="n">date_generation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>                   <span class="n">attribut1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribut2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>                   <span class="n">regbl_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="err">→</span> <span class="n">MaquetteGbxml</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
