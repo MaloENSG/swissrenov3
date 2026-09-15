@@ -1,4 +1,4 @@
-# 2. Quickstart
+# Quickstart - Code
 
 ## Load LAS file
 

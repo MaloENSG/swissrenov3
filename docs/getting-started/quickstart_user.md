@@ -10,11 +10,11 @@ Cette fenêtre permet de voir et d'interagir avec une image panoramique.
 
 ### ② Outils et actions
 
-Elle permet de sélectionner un outil pour interagir avec les images. Les différents outils sont présentés ultérieurement
+Cette boîte permet de sélectionner un outil pour interagir avec les images. Les différents outils sont présentés ultérieurement.
 
 ### ③ Filtrage et changement de carte 
 
-Cette fenêtre permet de choisir la zone de la friche que l’on souhaite visiter. Il est possible de filtrer les images pour faciliter la visite
+Cette fenêtre permet de choisir la zone de la friche que l’on souhaite visiter. Il est possible de filtrer les images pour faciliter la visite.
 
 ### ④ Carte du site
 
@@ -77,10 +77,12 @@ Les outils de saisie permettent d'annoter des informations sur les images, de le
 ### ① Saisir une remarque  
 ![Vue principale : remarque](../img/saisie1.jpg)
 
-Cliquer sur l'outil **Ajouter une remarque**, un paneau s'ouvre sur la droite. Il est possible de réduire ou développer ce panneau avec la flêche en haut à droite de ce panneau.  
-- **a. Choisir un Formulaire** : Une liste de formulaires s'affiche en cliquant sur le menu déroulant. Une fois le formulaire sélectionné, il s'affiche dans le panneau.  
-- **b. Détourer un objet** : Dans la **Vue panoramique**, détourer un objet en cliquant sur l'image.  
-- **c. Remplir le formulaire** : Remplir le formulaire dans le panneau avec des informations. Une fois terminé, cliquer sur **Enregistrer**.  
+Cliquer sur l'outil **Ajouter une remarque**, un paneau s'ouvre sur la droite.
+Il est possible de réduire ou développer ce panneau avec la flêche en haut à droite de ce panneau.
+
+- **a. Choisir un Formulaire** : Une liste de formulaires s'affiche en cliquant sur le menu déroulant. Une fois le formulaire sélectionné, il s'affiche dans le panneau.
+- **b. Détourer un objet** : Dans la **Vue panoramique**, détourer un objet en cliquant sur l'image.
+- **c. Remplir le formulaire** : Remplir le formulaire dans le panneau avec des informations. Une fois terminé, cliquer sur **Enregistrer**.
 
 ### ② Saisir un objet
 
@@ -93,9 +95,11 @@ La différence se trouve pendant le détourage d'un objet dans l'image. Il suffi
 
 ![Vue principale : affichage](../img/saisie3.jpg)
 
-Cliquer sur l'outil **Vue objet**, un panneau s'ouvre sur la gauche. Il est possible de réduire ou développer ce panneau avec la flêche en haut à droite de ce panneau.  
-- **a. Choisir le formulaire** : Une liste de formulaires s'affiche en cliquant sur le menu déroulant.  
-- **b. Choisir un champs** : La liste des champs du formulaire sélectionné s'affiche. Une fois le champs choisis, cliquer sur **Afficher** pour que les annotations apparaissent sur l'image panoramique.  
+Cliquer sur l'outil **Vue objet**, un panneau s'ouvre sur la gauche. 
+Il est possible de réduire ou développer ce panneau avec la flêche en haut à droite de ce panneau.
+
+- **a. Choisir le formulaire** : Une liste de formulaires s'affiche en cliquant sur le menu déroulant.
+- **b. Choisir un champs** : La liste des champs du formulaire sélectionné s'affiche. Une fois le champs choisis, cliquer sur **Afficher** pour que les annotations apparaissent sur l'image panoramique.
 - **c. Choisir une valeur (optionnel)** : Si seulement une valeur spécifique vous intéresse, remplir la valeur puis cliquer sur **Afficher**. Seul les annotations avec cette valeur spécifique s'affichent alors sur l'image panoramique.
 
 ### ④ Supprimer des annotations
