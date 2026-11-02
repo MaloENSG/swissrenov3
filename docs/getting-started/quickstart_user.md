@@ -61,7 +61,7 @@ La **Vue synchronisée** permet de passer sur le viewer **Potree** avec de la 3D
 ### ④ Changer de carte
 
 Une friche peut se décomposer en plusieurs zones et étages qui ne peuvent pas être représenté sur une seul carte. Le menu déroulant affiche la liste des **cartes** disponibles. Une fois
-sélectionné, la fenêtre **carte se mets à jour.
+sélectionné, la fenêtre **carte** se mets à jour.
 
 ### ⑤ Filtrer les panoramiques
 
